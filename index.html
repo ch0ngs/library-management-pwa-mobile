@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Library Management System - Mobile</title>
+
+<style>
+  :root {
+    --bg-color: #f7f9fc;
+    --text-color: #333;
+    --primary-color: #6c757d;
+    --primary-hover: #5a6268;
+    --surface-color: #fff;
+    --surface-alt: #f3f4f6;
+    --error-color: #dc2626;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; padding: 1rem;
+    background: var(--bg-color);
+    color: var(--text-color);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2 {
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  h1 { font-size: 1.8rem; }
+  h2 { font-size: 1.3rem; margin-top: 2rem; }
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    font-size: 1rem;
+  }
+  input, select {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1rem;
+    border: 1px solid #ccd7e0;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    background: var(--surface-alt);
+    color: var(--text-color);
+    box-sizing: border-box;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(108,117,125,0.5);
+  }
+
+  button {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    background-color: var(--primary-color);
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: var(--primary-hover);
+  }
+  button.secondary {
+    background-color: #495057;
+  }
+  button.secondary:hover {
+    background-color: #343a40;
+  }
+  button.danger {
+    background-color: #dc2626;
+  }
+  button.danger:hover {
+    background-color: #991b1b;
+  }
+  button:disabled {
+    background: #a5b4fc;
+    cursor: not-allowed;
+  }
+
+  .error {
+    color: var(--error-color);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    min-height: 1.25rem;
+    text-align: center;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+  th, td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  thead {
+    background-color: var(--surface-alt);
+    color: var(--primary-color);
+    font-weight: 700;
+  }
+
+  /* Responsive mobile: table scroll horizontally */
+  .table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 2rem;
+  }
+
+  /* Section spacing */
+  section {
+    margin-bottom: 2rem;
+    background: var(--surface-color);
+    padding: 1rem 1rem 2rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  /* Report text */
+  #reportText {
+    font-weight: 700;
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+</style>
+</head>
+<body>
+
+<h1>Library Management System</h1>
+
+<!-- Book Management -->
+<section aria-label="Book Management">
+  <h2>Book Management</h2>
+  <label for="bookTitle">Title</label>
+  <input id="bookTitle" type="text" autocomplete="off" placeholder="Book Title" />
+
+  <label for="bookAuthor">Author</label>
+  <input id="bookAuthor" type="text" autocomplete="off" placeholder="Author Name" />
+
+  <label for="bookISBN">ISBN</label>
+  <input id="bookISBN" type="text" autocomplete="off" placeholder="ISBN Number" />
+
+  <label for="bookYear">Publication Year</label>
+  <input id="bookYear" type="number" min="1000" max="9999" placeholder="Year" />
+
+  <button id="addBookBtn">➕ Add Book</button>
+  <button id="removeBookBtn" class="secondary">🗑️ Remove Book</button>
+  <div id="bookMessage" class="error" aria-live="polite"></div>
+
+  <div class="table-wrapper">
+    <table id="booksTable" aria-label="Books Table">
+      <thead>
+        <tr><th>Title</th><th>Author</th><th>ISBN</th><th>Year</th><th>Status</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Borrower Management -->
+<section aria-label="Borrower Management">
+  <h2>Borrower Management</h2>
+  <label for="borrowerName">Name</label>
+  <input id="borrowerName" type="text" autocomplete="off" placeholder="Borrower Name" />
+
+  <label for="borrowerID">ID</label>
+  <input id="borrowerID" type="text" autocomplete="off" placeholder="Borrower ID" />
+
+  <label for="borrowerContact">Contact Info</label>
+  <input id="borrowerContact" type="text" autocomplete="off" placeholder="Phone or Email" />
+
+  <button id="addBorrowerBtn">➕ Add Borrower</button>
+  <button id="removeBorrowerBtn" class="secondary">🗑️ Remove Borrower</button>
+  <div id="borrowerMessage" class="error" aria-live="polite"></div>
+
+  <div class="table-wrapper">
+    <table id="borrowersTable" aria-label="Borrowers Table">
+      <thead>
+        <tr><th>Name</th><th>ID</th><th>Contact</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Loan Management -->
+<section aria-label="Loan Management">
+  <h2>Loan Management</h2>
+  <label for="loanISBN">Book ISBN</label>
+  <input id="loanISBN" type="text" autocomplete="off" placeholder="ISBN to Borrow" />
+
+  <label for="loanBorrowerID">Borrower ID</label>
+  <input id="loanBorrowerID" type="text" autocomplete="off" placeholder="Borrower ID" />
+
+  <button id="borrowBookBtn">📚 Borrow Book</button>
+
+  <label for="returnISBN">Return Book ISBN</label>
+  <input id="returnISBN" type="text" autocomplete="off" placeholder="ISBN to Return" />
+
+  <button id="returnBookBtn" class="secondary">↩️ Return Book</button>
+  <div id="loanMessage" class="error" aria-live="polite"></div>
+
+  <div class="table-wrapper">
+    <table id="loansTable" aria-label="Loans Table">
+      <thead>
+        <tr><th>Book Title</th><th>Borrower</th><th>Borrow Date</th><th>Overdue Days</th><th>Fine (RM)</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Report Section -->
+<section aria-label="Library Report">
+  <h2>Library Report</h2>
+  <p id="reportText"></p>
+  <button id="generateReportBtn">📊 Generate Report</button>
+</section>
+
+<script>
+  // Data storage
+  let books = JSON.parse(localStorage.getItem('books') || '[]');
+  let borrowers = JSON.parse(localStorage.getItem('borrowers') || '[]');
+  let loans = JSON.parse(localStorage.getItem('loans') || '[]');
+
+  function saveData() {
+    localStorage.setItem('books', JSON.stringify(books));
+    localStorage.setItem('borrowers', JSON.stringify(borrowers));
+    localStorage.setItem('loans', JSON.stringify(loans));
+  }
+
+  function showMessage(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    setTimeout(() => el.textContent = '', 4000);
+  }
+
+  function findBookByISBN(isbn) {
+    return books.find(b => b.isbn === isbn);
+  }
+
+  function findBorrowerByID(id) {
+    return borrowers.find(b => b.id === id);
+  }
+
+  function isBookLoaned(isbn) {
+    return loans.some(loan => loan.isbn === isbn && !loan.returnDate);
+  }
+
+  // Display helpers
+  function renderBooks() {
+    const tbody = document.querySelector('#booksTable tbody');
+    tbody.innerHTML = '';
+    books.forEach(book => {
+      const status = isBookLoaned(book.isbn) ? 'Loaned Out' : 'Available';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${book.title}</td>
+        <td>${book.author}</td>
+        <td>${book.isbn}</td>
+        <td>${book.year}</td>
+        <td>${status}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderBorrowers() {
+    const tbody = document.querySelector('#borrowersTable tbody');
+    tbody.innerHTML = '';
+    borrowers.forEach(b => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${b.name}</td>
+        <td>${b.id}</td>
+        <td>${b.contact}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderLoans() {
+    const tbody = document.querySelector('#loansTable tbody');
+    tbody.innerHTML = '';
+    loans.filter(l => !l.returnDate).forEach(loan => {
+      const book = findBookByISBN(loan.isbn);
+      const borrower = findBorrowerByID(loan.borrowerId);
+      const borrowDate = new Date(loan.borrowDate);
+      const today = new Date();
+      const diffDays = Math.floor((today - borrowDate) / (1000*60*60*24));
+      const overdue = diffDays > 14 ? diffDays - 14 : 0;
+      const fine = overdue;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${book ? book.title : loan.isbn}</td>
+        <td>${borrower ? borrower.name : loan.borrowerId}</td>
+        <td>${borrowDate.toISOString().slice(0,10)}</td>
+        <td>${overdue}</td>
+        <td>RM${fine}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Clear inputs helpers
+  function clearInputs(...ids) {
+    ids.forEach(id => document.getElementById(id).value = '');
+  }
+
+  // Button event handlers
+  document.getElementById('addBookBtn').addEventListener('click', () => {
+    const title = document.getElementById('bookTitle').value.trim();
+    const author = document.getElementById('bookAuthor').value.trim();
+    const isbn = document.getElementById('bookISBN').value.trim();
+    const year = parseInt(document.getElementById('bookYear').value);
+
+    if (!title || !author || !isbn || !year) {
+      showMessage('bookMessage', 'All book fields are required.');
+      return;
+    }
+    if (findBookByISBN(isbn)) {
+      showMessage('bookMessage', 'ISBN must be unique.');
+      return;
+    }
+
+    books.push({title, author, isbn, year});
+    saveData();
+    clearInputs('bookTitle', 'bookAuthor', 'bookISBN', 'bookYear');
+    renderBooks();
+    showMessage('bookMessage', 'Book added successfully.');
+  });
+
+  document.getElementById('removeBookBtn').addEventListener('click', () => {
+    const isbn = document.getElementById('bookISBN').value.trim();
+    if (!isbn) {
+      showMessage('bookMessage', 'Enter ISBN to remove.');
+      return;
+    }
+    if (isBookLoaned(isbn)) {
+      showMessage('bookMessage', 'Cannot remove: Book is currently loaned.');
+      return;
+    }
+    const idx = books.findIndex(b => b.isbn === isbn);
+    if (idx === -1) {
+      showMessage('bookMessage', 'Book not found.');
+      return;
+    }
+    books.splice(idx, 1);
+    saveData();
+    clearInputs('bookTitle', 'bookAuthor', 'bookISBN', 'bookYear');
+    renderBooks();
+    showMessage('bookMessage', 'Book removed successfully.');
+  });
+
+  document.getElementById('addBorrowerBtn').addEventListener('click', () => {
+    const name = document.getElementById('borrowerName').value.trim();
+    const id = document.getElementById('borrowerID').value.trim();
+    const contact = document.getElementById('borrowerContact').value.trim();
+
+    if (!name || !id || !contact) {
+      showMessage('borrowerMessage', 'All borrower fields are required.');
+      return;
+    }
+    if (findBorrowerByID(id)) {
+      showMessage('borrowerMessage', 'Borrower ID must be unique.');
+      return;
+    }
+    borrowers.push({name, id, contact});
+    saveData();
+    clearInputs('borrowerName', 'borrowerID', 'borrowerContact');
+    renderBorrowers();
+    showMessage('borrowerMessage', 'Borrower added successfully.');
+  });
+
+  document.getElementById('removeBorrowerBtn').addEventListener('click', () => {
+    const id = document.getElementById('borrowerID').value.trim();
+    if (!id) {
+      showMessage('borrowerMessage', 'Enter Borrower ID to remove.');
+      return;
+    }
+    const hasLoan = loans.some(loan => loan.borrowerId === id && !loan.returnDate);
+    if (hasLoan) {
+      showMessage('borrowerMessage', 'Cannot remove: Borrower has active loans.');
+      return;
+    }
+    const idx = borrowers.findIndex(b => b.id === id);
+    if (idx === -1) {
+      showMessage('borrowerMessage', 'Borrower not found.');
+      return;
+    }
+    borrowers.splice(idx, 1);
+    saveData();
+    clearInputs('borrowerName', 'borrowerID', 'borrowerContact');
+    renderBorrowers();
+    showMessage('borrowerMessage', 'Borrower removed successfully.');
+  });
+
+  document.getElementById('borrowBookBtn').addEventListener('click', () => {
+    const isbn = document.getElementById('loanISBN').value.trim();
+    const borrowerId = document.getElementById('loanBorrowerID').value.trim();
+
+    if (!isbn || !borrowerId) {
+      showMessage('loanMessage', 'ISBN and Borrower ID are required.');
+      return;
+    }
+    if (!findBookByISBN(isbn)) {
+      showMessage('loanMessage', 'Book ISBN not found.');
+      return;
+    }
+    if (!findBorrowerByID(borrowerId)) {
+      showMessage('loanMessage', 'Borrower ID not found.');
+      return;
+    }
+    if (isBookLoaned(isbn)) {
+      showMessage('loanMessage', 'Book is already loaned.');
+      return;
+    }
+    loans.push({isbn, borrowerId, borrowDate: new Date().toISOString(), returnDate: null});
+    saveData();
+    clearInputs('loanISBN', 'loanBorrowerID');
+    renderLoans();
+    renderBooks();
+    showMessage('loanMessage', 'Book borrowed successfully.');
+  });
+
+  document.getElementById('returnBookBtn').addEventListener('click', () => {
+    const isbn = document.getElementById('returnISBN').value.trim();
+    if (!isbn) {
+      showMessage('loanMessage', 'Enter ISBN to return.');
+      return;
+    }
+    const loan = loans.find(l => l.isbn === isbn && !l.returnDate);
+    if (!loan) {
+      showMessage('loanMessage', 'No active loan found for this ISBN.');
+      return;
+    }
+    loan.returnDate = new Date().toISOString();
+    saveData();
+    clearInputs('returnISBN');
+    renderLoans();
+    renderBooks();
+    showMessage('loanMessage', 'Book returned successfully.');
+  });
+
+  document.getElementById('generateReportBtn').addEventListener('click', () => {
+    const totalBooks = books.length;
+    const totalBorrowers = borrowers.length;
+    const totalOverdue = loans.filter(l => {
+      if (l.returnDate) return false;
+      const borrowDate = new Date(l.borrowDate);
+      const diffDays = Math.floor((new Date() - borrowDate) / (1000*60*60*24));
+      return diffDays > 14;
+    }).length;
+    document.getElementById('reportText').textContent =
+      `Total Books: ${totalBooks}, Total Borrowers: ${totalBorrowers}, Overdue Loans: ${totalOverdue}`;
+  });
+
+  // Initial render on page load
+  renderBooks();
+  renderBorrowers();
+  renderLoans();
+</script>
+
+</body>
+</html>
